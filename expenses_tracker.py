@@ -124,7 +124,7 @@ def expenses_tracker_page():
     else:
         st.info("No expense data available. Please upload a receipt to get started.")
 
-    uploaded_file = st.file_uploader("Choose a receipt image...", type=["jpg", "png"])
+    uploaded_file = st.file_uploader("Choose a receipt image...", type=["jpg", "png"], key="uploader1")
 
     if uploaded_file is not None:
         # Display the uploaded image
