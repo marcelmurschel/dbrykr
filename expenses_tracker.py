@@ -40,8 +40,7 @@ def process_receipt(image_url):
     return data
 
 def display_header_image():
-    # Placeholder for header image
-    st.image("https://via.placeholder.com/728x90.png?text=Expenses+Tracker+Header", use_column_width=True)
+    st.image("et_banner.jpg", use_column_width=True)
 
 def calculate_monthly_expenses(df):
     df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
