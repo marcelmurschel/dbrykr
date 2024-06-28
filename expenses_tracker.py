@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,58 +29,54 @@ def upload_image_to_imgur(image_path):
         st.error("Failed to upload image to Imgur")
         return None
 
-def process_receipt(image_url):
+def process_receipt(image_url, heutiges_datum):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {"type": "text", "text": """Du siehst hier einen Kassenzettel. Bitte gebe mir einen output im json format 
-                    wo du das jeweilige Produkt, der Price, die Menge (wenn vorhanden), die Produktkategorie (z.B. "Obst & Gemüse"), das Kaufdatum, und der Supermarkt zu finden sind. 
+                "content": f"""
+                Du siehst hier einen Kassenzettel. Bitte gebe mir einen output im json format 
+                wo du das jeweilige Produkt, der Price, die Menge (wenn vorhanden), die Produktkategorie (z.B. "Obst & Gemüse"), das Kaufdatum, und der Supermarkt zu finden sind. 
 
-                    Das Json soll so aussehen: 
-                    {
-                      "store": "Supermarkt XYZ",
-                      "date": date,
-                      "items": {
-                        "product_name": name,
-                        "quantity": menge als zahl,
-                        "price": preis als zahl,
-                        "category": produktkategorie,
-                      }
-                    }    
+                Das Json soll so aussehen: 
+                {{
+                  "store": "Supermarkt XYZ",
+                  "date": date,
+                  "items": {{
+                    "product_name": name,
+                    "quantity": menge als zahl,
+                    "price": preis als zahl,
+                    "category": produktkategorie,
+                  }}
+                }}    
+
+                Das Datum soll immer in diesem Format dargestellt werden: "%d.%m.%Y". Wenn du kein Datum identifizieren kannst, dann schreibe bitte das heutige Datum {heutiges_datum} hinein.
                 
+                Bei dem store schreibe bitte nur den Namen hin - nichts längeres. 
 
-                    Das Datum soll immer in diesem Format dargestellt werden: "%d.%m.%Y"
-                    
-                    Bei dem store schreibe bitte nur den Namen hin - nichts längeres. 
-
-                    Diese produktkategorien gibt es: 
-                        "Obst und Gemüse",
-                        "Brot und Backwaren",
-                        "Milchprodukte",
-                        "Fleisch und Wurstwaren",
-                        "Fisch und Meeresfrüchte",
-                        "Tiefkühlprodukte",
-                        "Konserven und Fertiggerichte",
-                        "Teigwaren und Reis",
-                        "Getränke",
-                        "Süßwaren und Snacks",
-                        "Kaffee und Tee",
-                        "Babynahrung und Babyprodukte",
-                        "Haushaltswaren und Reinigungsmittel",
-                        "Körperpflege und Kosmetik",
-                        "Tiernahrung und -zubehör",
-                        "Backzutaten und Gewürze",
-                        "Bio- und Reformprodukte",
-                        "Non-Food-Artikel"
-                    """},
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": image_url},
-                    },
-                ],
+                Diese produktkategorien gibt es: 
+                    "Obst und Gemüse",
+                    "Brot und Backwaren",
+                    "Milchprodukte",
+                    "Fleisch und Wurstwaren",
+                    "Fisch und Meeresfrüchte",
+                    "Tiefkühlprodukte",
+                    "Konserven und Fertiggerichte",
+                    "Teigwaren und Reis",
+                    "Getränke",
+                    "Süßwaren und Snacks",
+                    "Kaffee und Tee",
+                    "Babynahrung und Babyprodukte",
+                    "Haushaltswaren und Reinigungsmittel",
+                    "Körperpflege und Kosmetik",
+                    "Tiernahrung und -zubehör",
+                    "Backzutaten und Gewürze",
+                    "Bio- und Reformprodukte",
+                    "Non-Food-Artikel"
+                """,
+                "type": "image_url",
+                "image_url": {"url": image_url},
             }
         ],
         max_tokens=1500,
@@ -139,8 +136,9 @@ def expenses_tracker_page():
         image_url = upload_image_to_imgur(temp_file_path)
 
         if image_url:
+            heutiges_datum = datetime.today().strftime('%d.%m.%Y')
             # Process the image URL
-            data = process_receipt(image_url)
+            data = process_receipt(image_url, heutiges_datum)
 
             # Convert the data to a DataFrame
             df = pd.DataFrame(data['items'])
