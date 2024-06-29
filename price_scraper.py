@@ -127,7 +127,9 @@ def scrape_prices():
     return rewe_df, lidl_df, kaufland_df, edeka_df
 
 def analyze_with_ai(json_data, prompt):
-    ai_prompt = f"""Based on this angebote from grocery stores {json_data}, Give me the Top 20 angebote for someone who has this profile of whishes:{prompt}. Respond in JSON format that has the same structure as the input. the key of the dictionairy is "angebote" """
+    ai_prompt = f"""Basierend auf diesen Sondernangeboten aus Supermärkten {json_data}, gib mir die Top 25 Angebote für jemanden mit diesem Wunschprofil: 
+    {prompt}, Bitte zeige keine Non-Food-Artikel. 
+    Antworte im JSON-Format, das die gleiche Struktur wie die Eingabe hat.in JSON format that has the same structure as the input. the key of the dictionairy is "angebote" """
     response = client.chat.completions.create(
         model="gpt-4o",
         response_format={"type": "json_object"},
@@ -145,7 +147,7 @@ def price_scraper_page():
     st.title("🔍 Price Scraper")
 
     st.write("Enter Stichwörter for better AI analysis:")
-    stichworter = st.text_input("Stichwörter", "veggie, chocolate")
+    stichworter = st.text_input("Stichwörter", "Veggie, Schokolade, Olivenöl")
 
     if st.button("Scrape"):
         with st.spinner("Scraping prices..."):
