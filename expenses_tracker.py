@@ -82,7 +82,7 @@ def process_receipt(image_url, heutiges_datum):
                 ],
             }
         ],
-        max_tokens=1500,
+        max_tokens=25000,
         temperature=0,
         response_format={"type": "json_object"},
     )
