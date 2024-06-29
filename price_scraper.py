@@ -185,6 +185,7 @@ def price_scraper_page():
         # Perform AI analysis
         with st.spinner("Analyzing data with AI..."):
             json_data = combined_df.to_json(orient='records')
+            print(json_data)
             analyzed_df = analyze_with_ai(json_data, stichworter)
 
         st.write("### Analyzed Offers")
