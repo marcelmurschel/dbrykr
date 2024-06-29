@@ -110,6 +110,19 @@ def plot_expenses_chart(df):
     
     st.pyplot(fig)
 
+def plot_category_expenses(df):
+    category_expenses = df.groupby('category')['price'].sum().reset_index()
+    category_expenses = category_expenses.sort_values(by='price', ascending=True)  # Sort by total expenses descending
+    
+    # Plot a horizontal bar chart
+    fig, ax = plt.subplots()
+    ax.barh(category_expenses['category'], category_expenses['price'])
+    ax.set_xlabel('Total Expenses')
+    ax.set_ylabel('Category')
+    ax.set_title('Expense Distribution by Category')
+    
+    st.pyplot(fig)
+
 def expenses_tracker_page():
     st.title("💸 Expenses Tracker")
 
@@ -120,9 +133,8 @@ def expenses_tracker_page():
     csv_file_path = "receipt_data.csv"
     if os.path.exists(csv_file_path):
         df = pd.read_csv(csv_file_path)
-        plot_expenses_chart(df)
     else:
-        st.info("No expense data available. Please upload a receipt to get started.")
+        df = None
 
     uploaded_file = st.file_uploader("Choose a receipt image...", type=["jpg", "png"], key="uploader1")
 
@@ -141,24 +153,21 @@ def expenses_tracker_page():
         if image_url:
             heutiges_datum = datetime.today().strftime('%d.%m.%Y')
             # Process the image URL
-            print(heutiges_datum)
             data = process_receipt(image_url, heutiges_datum)
 
             # Convert the data to a DataFrame
-            df = pd.DataFrame(data['items'])
-            df['store'] = data['store']
-            df['date'] = data['date']
+            df_new = pd.DataFrame(data['items'])
+            df_new['store'] = data['store']
+            df_new['date'] = data['date']
+            df_new['category'] = data['items']['category']  # Assuming category is part of returned data
 
-            # Display the DataFrame
-            st.write(df)
+            # Append the new data to the existing DataFrame
+            if df is not None:
+                df = pd.concat([df, df_new], ignore_index=True)
+            else:
+                df = df_new
 
-            # Append the new data to the CSV file
-            try:
-                existing_df = pd.read_csv(csv_file_path)
-                df = pd.concat([existing_df, df], ignore_index=True)
-            except FileNotFoundError:
-                pass  # The CSV file doesn't exist yet
-
+            # Save the combined DataFrame to CSV
             df.to_csv(csv_file_path, index=False)
 
             # Provide download link for the CSV
@@ -170,8 +179,17 @@ def expenses_tracker_page():
                 mime='text/csv',
             )
 
-            # Plot updated expenses chart
-            plot_expenses_chart(df)
+    # Plot charts at the bottom of the page
+    if df is not None:
+        st.header('Expense Analysis')
+        st.subheader('Monthly Expenses')
+        plot_expenses_chart(df)
+
+        st.subheader('Expense Distribution by Category')
+        plot_category_expenses(df)
 
 # Call the function to render the Streamlit app
 expenses_tracker_page()
+
+
+

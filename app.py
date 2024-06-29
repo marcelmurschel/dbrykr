@@ -7,7 +7,8 @@ load_dotenv()
 
 # Import your custom pages
 from base import base_page
-from expenses_tracker import expenses_tracker_page  # Import the new page
+from expenses_tracker import expenses_tracker_page
+from price_scraper import price_scraper_page  # Import the new page
 
 # Set your OpenAI and Anthropic API keys
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
@@ -21,6 +22,7 @@ st.sidebar.title("🧪 debruyker lab")
 page = st.sidebar.radio("Go to", [
     "🏠 BASE",
     "💸 Expenses Tracker",
+    "🔍 Price Scraper"
 ])
 
 # Navigation
@@ -28,6 +30,8 @@ if page == "🏠 BASE":
     base_page()
 elif page == "💸 Expenses Tracker":
     expenses_tracker_page()
+elif page == "🔍 Price Scraper":
+    price_scraper_page()
 
 # Footer
 st.write("\n\n")
