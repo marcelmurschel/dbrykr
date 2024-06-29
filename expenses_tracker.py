@@ -89,6 +89,7 @@ def process_receipt(image_url, heutiges_datum):
 
     # Extract the response content
     json_string = json.loads(response.choices[0].message.content)
+    print(json_string)
     data = json_string
     return data
 
