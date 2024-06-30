@@ -137,7 +137,7 @@ def expenses_tracker_page():
     else:
         df = None
 
-    uploaded_file = st.file_uploader("Choose a receipt image...", type=["jpg", "png"], key="uploader1")
+    uploaded_file = st.file_uploader("Choose a receipt image...", type=["jpg", "png"], key="unique_uploader")
 
     if uploaded_file is not None:
         # Display the uploaded image
@@ -155,13 +155,16 @@ def expenses_tracker_page():
             heutiges_datum = datetime.today().strftime('%d.%m.%Y')
             # Process the image URL
             data = process_receipt(image_url, heutiges_datum)
-
+            print(data)
             # Convert the data to a DataFrame
             df_new = pd.DataFrame(data['items'])
             df_new['store'] = data['store']
             df_new['date'] = data['date']
-            df_new['category'] = data['items']['category']  # Assuming category is part of returned data
-
+            
+            # Display the new DataFrame
+            st.subheader('Newly Uploaded Receipt Data')
+            st.dataframe(df_new)  # Display the DataFrame with a scrollbar
+            
             # Append the new data to the existing DataFrame
             if df is not None:
                 df = pd.concat([df, df_new], ignore_index=True)
@@ -191,6 +194,3 @@ def expenses_tracker_page():
 
 # Call the function to render the Streamlit app
 expenses_tracker_page()
-
-
-
