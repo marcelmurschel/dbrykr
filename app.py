@@ -25,7 +25,7 @@ page = st.sidebar.radio("Go to", [
     "🏠 BASE",
     "💸 Expenses Tracker",
     "🔍 Price Scraper",
-    "🎙️ InterviewBot"
+    "🎙️ Interview Bot"
 ])
 
 # Navigation
@@ -35,9 +35,9 @@ elif page == "💸 Expenses Tracker":
     expenses_tracker_page()
 elif page == "🔍 Price Scraper":
     price_scraper_page()
-elif page == "🎙️ InterviewBot":
+elif page == "🎙️ Interview Bot":
     interview_bot_page()
 
 # Footer
 st.write("\n\n")
-st.markdown("<div style='color: grey; text-align: center;'>🤖 This tool was built by Marcel Debruyker.</div>", unsafe_allow_html=True)
+st.markdown("<div style='color: grey; text-align: center;'>🤖 made by debruyker lab</div>", unsafe_allow_html=True)

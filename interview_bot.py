@@ -18,8 +18,8 @@ def interview_bot_page():
         st.session_state.thread_id = None
 
     # Always display the title at the top
-    st.title("🎙️ InterviewBot")
-    st.write("Willkommen bei InterviewBot! 🎙️ Wir freuen uns, dass Sie an diesem kleinen Interview teilnehmen möchten. Unser KI-gestützter Interviewer wird Ihnen einige Fragen stellen, um qualitative Daten zu sammeln. Ihre Antworten sind wertvoll für uns. Lassen Sie uns beginnen!")
+    st.title("🎙️ Interview Bot")
+    st.write("Willkommen bei Interview Bot! Wir freuen uns, dass Sie an diesem kleinen Interview teilnehmen möchten. Unser KI-gestützter Interviewer wird Ihnen einige Fragen stellen, um qualitative Daten zu sammeln. Ihre Antworten sind wertvoll für uns. Lassen Sie uns beginnen!")
 
     # Function to display messages
     def display_messages():
@@ -39,7 +39,7 @@ def interview_bot_page():
         placeholder.markdown(text)
 
     # Chat input
-    if prompt := st.chat_input("What is your question?"):
+    if prompt := st.chat_input("Schreiben Sie hier Ihre Antwort hinein."):
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
 
